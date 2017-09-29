@@ -9,6 +9,7 @@ namespace OracleCom
     {
         List<Dictionary<string, object>> datas = new List<Dictionary<string, object>>();
         int index = 0;
+        bool EofFlag = true;
 
         public DBData()
         {
@@ -22,6 +23,7 @@ namespace OracleCom
         internal void Add(Dictionary<string, object> DBData)
         {
             datas.Add(DBData);
+            EofFlag = false;
         }
 
         /// <summary>
@@ -36,6 +38,7 @@ namespace OracleCom
                 return true;
             }
 
+            EofFlag = true;
             return false;
         }
 
@@ -59,6 +62,24 @@ namespace OracleCom
         public int Count()
         {
             return datas.Count;
+        }
+        /// <summary>
+        /// データ件数を返す
+        /// </summary>
+        /// <returns></returns>
+        public int RecordCount()
+        {
+            return datas.Count;
+        }
+
+        /// <summary>
+        /// EOFを返す
+        /// </summary>
+        /// <returns></returns>
+        public bool EOF()
+        {
+            return EofFlag;
+
         }
     }
 }
