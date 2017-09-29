@@ -14,6 +14,11 @@ namespace OracleCom
             _oracleConnection = conn;
         }
 
+        public DBData CreateDynaset(string SQL,int Param)
+        {
+            return CreateDynaset(SQL);
+        }
+
         public DBData CreateDynaset(string SQL)
         {
             DBData datas = new DBData();

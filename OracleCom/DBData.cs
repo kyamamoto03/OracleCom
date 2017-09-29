@@ -55,6 +55,11 @@ namespace OracleCom
             }
         }
 
+        public void Close()
+        {
+            //Nothing To Do
+        }
+
         /// <summary>
         /// データ件数を返す
         /// </summary>
