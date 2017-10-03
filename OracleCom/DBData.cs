@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Collections.Specialized;
 
 namespace OracleCom
 {
@@ -7,7 +8,7 @@ namespace OracleCom
     [ComVisible(true)]
     public class DBData
     {
-        List<Dictionary<string, object>> datas = new List<Dictionary<string, object>>();
+        List<OrderedDictionary> datas = new List<OrderedDictionary>();
         int index = 0;
         bool EofFlag = true;
 
@@ -20,7 +21,7 @@ namespace OracleCom
         /// データを追加する
         /// </summary>
         /// <param name="DBData"></param>
-        internal void Add(Dictionary<string, object> DBData)
+        internal void Add(OrderedDictionary DBData)
         {
             datas.Add(DBData);
             EofFlag = false;
@@ -54,6 +55,13 @@ namespace OracleCom
                 return datas[index][Key.ToUpper()];
             }
         }
+        public object this[int Key]
+        {
+            get
+            {
+                return datas[index][Key];
+            }
+        }
 
         public void Close()
         {
@@ -61,12 +69,12 @@ namespace OracleCom
         }
 
         /// <summary>
-        /// データ件数を返す
+        /// 項目(列)数を返す
         /// </summary>
         /// <returns></returns>
-        public int Count()
+        public int ColumCount()
         {
-            return datas.Count;
+            return datas[0].Count;
         }
         /// <summary>
         /// データ件数を返す

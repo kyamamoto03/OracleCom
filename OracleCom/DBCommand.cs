@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Oracle.ManagedDataAccess.Client;
+using System.Collections.Specialized;
 
 namespace OracleCom
 {
@@ -32,7 +33,7 @@ namespace OracleCom
                     {
                         while (dr.Read())
                         {
-                            Dictionary<string, object> data = new Dictionary<string, object>();
+                            OrderedDictionary data = new OrderedDictionary();
                             for (int i = 0; i < dr.VisibleFieldCount; i++)
                             {
                                 data.Add(dr.GetName(i).ToUpper(), dr.GetValue(i));
