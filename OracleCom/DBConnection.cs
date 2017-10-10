@@ -45,6 +45,7 @@ namespace OracleCom
                 catch (Exception ex)
                 {
                     SetError(-1, ex.Message);
+                    return null;
                 }
             }
 

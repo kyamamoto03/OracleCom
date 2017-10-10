@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Oracle.ManagedDataAccess.Client;
 using System.Collections.Specialized;
+using System;
 
 namespace OracleCom
 {
@@ -22,31 +23,38 @@ namespace OracleCom
 
         public DBData CreateDynaset(string SQL)
         {
-            DBData datas = new DBData();
-
-
-            if (_oracleConnection != null)
+            try
             {
-                using (OracleCommand cmd = new OracleCommand(SQL, _oracleConnection))
+                DBData datas = new DBData();
+
+
+                if (_oracleConnection != null)
                 {
-                    using (OracleDataReader dr = cmd.ExecuteReader())
+                    using (OracleCommand cmd = new OracleCommand(SQL, _oracleConnection))
                     {
-                        while (dr.Read())
+                        using (OracleDataReader dr = cmd.ExecuteReader())
                         {
-                            OrderedDictionary data = new OrderedDictionary();
-                            for (int i = 0; i < dr.VisibleFieldCount; i++)
+                            while (dr.Read())
                             {
-                                data.Add(dr.GetName(i).ToUpper(), dr.GetValue(i));
+                                OrderedDictionary data = new OrderedDictionary();
+                                for (int i = 0; i < dr.VisibleFieldCount; i++)
+                                {
+                                    data.Add(dr.GetName(i).ToUpper(), dr.GetValue(i));
+                                }
+                                datas.Add(data);
+
                             }
-                            datas.Add(data);
-
                         }
+
                     }
-
                 }
-            }
 
-            return datas;
+                return datas;
+            }catch(Exception ex)
+            {
+                SetError(ex.HResult, ex.Message);
+                return null;
+            }
         }
 
         /// <summary>
@@ -55,18 +63,25 @@ namespace OracleCom
         /// <param name="SQL"></param>
         public int ExecuteSQL(string SQL)
         {
-            if (_oracleConnection != null)
+            try
             {
-                using (OracleCommand cmd = new OracleCommand(SQL, _oracleConnection))
+                if (_oracleConnection != null)
                 {
-                    return cmd.ExecuteNonQuery();
+                    using (OracleCommand cmd = new OracleCommand(SQL, _oracleConnection))
+                    {
+                        return cmd.ExecuteNonQuery();
+                    }
                 }
-            }
-            else
+                else
+                {
+                    SetError(-1, "データベースの接続がありません");
+                }
+                return 0;
+            }catch(Exception ex)
             {
-                SetError(-1, "データベースの接続がありません");
+                SetError(ex.HResult, ex.Message);
+                return -1;
             }
-            return 0;
         }
     }
 }

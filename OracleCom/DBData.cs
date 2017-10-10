@@ -20,10 +20,10 @@ namespace OracleCom
         /// <summary>
         /// データを追加する
         /// </summary>
-        /// <param name="DBData"></param>
-        internal void Add(OrderedDictionary DBData)
+        /// <param name="data"></param>
+        internal void Add(OrderedDictionary data)
         {
-            datas.Add(DBData);
+            datas.Add(data);
             EofFlag = false;
         }
 
@@ -74,7 +74,19 @@ namespace OracleCom
         /// <returns></returns>
         public int ColumCount()
         {
-            return datas[0].Count;
+            return datas[index].Count;
+        }
+        /// <summary>
+        /// FieldDataを返す
+        /// データが０件の場合はエラー
+        /// </summary>
+        /// <returns></returns>
+        public FieldData Fields
+        {
+            get
+            {
+                return new FieldData(datas[index]);
+            }
         }
         /// <summary>
         /// データ件数を返す
@@ -93,6 +105,23 @@ namespace OracleCom
         {
             return EofFlag;
 
+        }
+
+        public class FieldData
+        {
+            OrderedDictionary fieldData;
+
+            public FieldData(OrderedDictionary data)
+            {
+                this.fieldData = data;
+            }
+            public int Count
+            {
+                get
+                {
+                    return this.fieldData.Count;
+                }
+            }
         }
     }
 }
