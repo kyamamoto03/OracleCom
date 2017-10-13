@@ -74,7 +74,15 @@ namespace OracleCom
         /// <returns></returns>
         public int ColumCount()
         {
-            return datas[index].Count;
+            if (datas.Count > 0)
+            {
+                return datas[0].Count;
+            }
+            else
+            {
+                return 0;
+            }
+
         }
         /// <summary>
         /// FieldDataを返す
