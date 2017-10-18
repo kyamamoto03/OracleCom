@@ -104,6 +104,13 @@ namespace OracleCom
         {
             return datas.Count;
         }
+        public  int Count
+        {
+            get
+            {
+                return datas.Count;
+            }
+        }
 
         /// <summary>
         /// EOFを返す
@@ -128,6 +135,13 @@ namespace OracleCom
                 get
                 {
                     return this.fieldData.Count;
+                }
+            }
+            public object this[int index]
+            {
+                get
+                {
+                    return fieldData[index];
                 }
             }
         }
