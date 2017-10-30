@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace OracleCom
 {
@@ -8,20 +9,25 @@ namespace OracleCom
     [ComVisible(true)]
     public class DBData
     {
-        List<OrderedDictionary> datas = new List<OrderedDictionary>();
+        List<DBDataDetail> datas = new List<DBDataDetail>();
+        DBHeader _dbHeader;
         int index = 0;
         bool EofFlag = true;
 
         public DBData()
         {
+        }
 
+        public void SetHeader(DBHeader dbHeader)
+        {
+            _dbHeader = dbHeader;
         }
 
         /// <summary>
         /// データを追加する
         /// </summary>
         /// <param name="data"></param>
-        internal void Add(OrderedDictionary data)
+        internal void Add(DBDataDetail data)
         {
             datas.Add(data);
             EofFlag = false;
@@ -52,7 +58,7 @@ namespace OracleCom
         {
             get
             {
-                return datas[index][Key.ToUpper()];
+                return datas[index][_dbHeader[Key.ToUpper()]];
             }
         }
         public object this[int Key]
@@ -76,7 +82,7 @@ namespace OracleCom
         {
             if (datas.Count > 0)
             {
-                return datas[0].Count;
+                return _dbHeader.Count;
             }
             else
             {
@@ -124,9 +130,9 @@ namespace OracleCom
 
         public class FieldData
         {
-            OrderedDictionary fieldData;
+            DBDataDetail fieldData;
 
-            public FieldData(OrderedDictionary data)
+            public FieldData(DBDataDetail data)
             {
                 this.fieldData = data;
             }
@@ -143,6 +149,66 @@ namespace OracleCom
                 {
                     return fieldData[index];
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 行データを管理するクラス
+    /// </summary>
+    public class DBDataDetail
+    {
+        List<object> _datas = new List<object>();
+
+        public void Add(object obj)
+        {
+            _datas.Add(obj);
+        }
+
+        public object this[int index]
+        {
+            get
+            {
+                return _datas[index];
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return _datas.Count;
+            }
+        }
+    }
+
+    /// <summary>
+    /// カラム名を管理するクラス
+    /// </summary>
+    public class DBHeader
+    {
+        OrderedDictionary _ColumnNames = new OrderedDictionary();
+        int _index = 0;
+
+        public void AddColumnName(string columnName)
+        {
+            _ColumnNames.Add(columnName,_index++);
+        }
+
+        public int Count
+        {
+            get
+            {
+                return _ColumnNames.Count;
+            }
+        }
+        public int this[string columnName]
+        {
+            get
+            {
+                int index;
+                index = (int)_ColumnNames[columnName];
+                return index;
             }
         }
     }

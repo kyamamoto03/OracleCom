@@ -30,7 +30,7 @@ namespace OracleCom
             {
                 DBData datas = new DBData();
 
-
+                bool FirstTime = true;
                 if (_oracleConnection != null)
                 {
                     _oracleCommand.CommandText = SQL;
@@ -38,10 +38,22 @@ namespace OracleCom
                     {
                         while (dr.Read())
                         {
-                            OrderedDictionary data = new OrderedDictionary();
+                            if (FirstTime)
+                            {
+                                DBHeader header = new DBHeader();
+                                for (int i = 0; i < dr.VisibleFieldCount; i++)
+                                {
+                                    header.AddColumnName(dr.GetName(i).ToUpper());
+                                }
+
+                                datas.SetHeader(header);
+                                FirstTime = false;
+                            }
+
+                            DBDataDetail data = new DBDataDetail();
                             for (int i = 0; i < dr.VisibleFieldCount; i++)
                             {
-                                data.Add(dr.GetName(i).ToUpper(), dr.GetValue(i));
+                                data.Add(dr.GetValue(i));
                             }
                             datas.Add(data);
 
