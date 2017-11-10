@@ -36,6 +36,7 @@ namespace OracleCom
                     _oracleCommand.CommandText = SQL;
                     using (OracleDataReader dr = _oracleCommand.ExecuteReader())
                     {
+                        datas.ColumnCount = dr.FieldCount;
                         while (dr.Read())
                         {
                             if (FirstTime)
@@ -58,7 +59,9 @@ namespace OracleCom
                             datas.Add(data);
 
                         }
+
                     }
+
                 }
 
                 return datas;

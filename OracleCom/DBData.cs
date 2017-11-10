@@ -11,6 +11,7 @@ namespace OracleCom
     {
         List<DBDataDetail> datas = new List<DBDataDetail>();
         DBHeader _dbHeader;
+        int _columnCount;
         int index = 0;
         bool EofFlag = true;
 
@@ -80,16 +81,14 @@ namespace OracleCom
         /// <returns></returns>
         public int ColumCount()
         {
-            if (datas.Count > 0)
-            {
-                return _dbHeader.Count;
-            }
-            else
-            {
-                return 0;
-            }
-
+            return _columnCount;
         }
+        public int ColumnCount
+        {
+            get { return _columnCount; }
+            set { _columnCount = value; }
+        }
+
         /// <summary>
         /// FieldDataを返す
         /// データが０件の場合はエラー
@@ -99,7 +98,18 @@ namespace OracleCom
         {
             get
             {
-                return new FieldData(datas[index]);
+                if (datas.Count > 0)
+                {
+                    var f = new FieldData(datas[index]);
+                    f.Count = ColumnCount;
+                    return f;
+                }
+                else
+                {
+                    var f = new FieldData(new DBDataDetail());
+                    f.Count = ColumnCount;
+                    return f;
+                }
             }
         }
         /// <summary>
@@ -131,6 +141,7 @@ namespace OracleCom
         public class FieldData
         {
             DBDataDetail fieldData;
+            int _columnCount;
 
             public FieldData(DBDataDetail data)
             {
@@ -140,7 +151,11 @@ namespace OracleCom
             {
                 get
                 {
-                    return this.fieldData.Count;
+                    return _columnCount;
+                }
+                internal set
+                {
+                    _columnCount = value;
                 }
             }
             public object this[int index]
@@ -159,6 +174,7 @@ namespace OracleCom
     public class DBDataDetail
     {
         List<object> _datas = new List<object>();
+        int _count;
 
         public void Add(object obj)
         {
@@ -177,7 +193,11 @@ namespace OracleCom
         {
             get
             {
-                return _datas.Count;
+                return _count;
+            }
+            set
+            {
+                _count = value;
             }
         }
     }
