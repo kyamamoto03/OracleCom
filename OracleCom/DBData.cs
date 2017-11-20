@@ -49,6 +49,37 @@ namespace OracleCom
             EofFlag = true;
             return false;
         }
+        /// <summary>
+        /// 前の行へ移動する
+        /// </summary>
+        /// <returns></returns>
+        public bool MovePrevious()
+        {
+            index--;
+            if (0 <= index)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// 最初の行へ移動する
+        /// </summary>
+        /// <returns></returns>
+        public void MoveFirst()
+        {
+            index = 0;
+        }
+        /// <summary>
+        /// 最後の行へ移動する
+        /// </summary>
+        /// <returns></returns>
+        public void MoveLast()
+        {
+            index = datas.Count - 1;
+        }
+
 
         /// <summary>
         /// インデクサ
@@ -101,12 +132,14 @@ namespace OracleCom
                 if (datas.Count > 0)
                 {
                     var f = new FieldData(datas[index]);
+                    f.SetHeader(_dbHeader);
                     f.Count = ColumnCount;
                     return f;
                 }
                 else
                 {
                     var f = new FieldData(new DBDataDetail());
+                    f.SetHeader(_dbHeader);
                     f.Count = ColumnCount;
                     return f;
                 }
@@ -134,19 +167,51 @@ namespace OracleCom
         /// <returns></returns>
         public bool EOF()
         {
-            return EofFlag;
+            //return EofFlag;
+            if (index >= datas.Count)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
 
         }
+        /// <summary>
+        /// BOFを返す
+        /// </summary>
+        /// <returns></returns>
+        public bool BOF()
+        {
+            if(index < 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         public class FieldData
         {
             DBDataDetail fieldData;
+            DBHeader _dbHeader;
             int _columnCount;
 
             public FieldData(DBDataDetail data)
             {
                 this.fieldData = data;
             }
+
+            public void SetHeader(DBHeader dbHeader)
+            {
+                _dbHeader = dbHeader;
+            }
+
             public int Count
             {
                 get
@@ -163,6 +228,13 @@ namespace OracleCom
                 get
                 {
                     return fieldData[index];
+                }
+            }
+            public object this[string Key]
+            {
+                get
+                {
+                    return fieldData[_dbHeader[Key.ToUpper()]];
                 }
             }
         }
