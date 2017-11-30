@@ -107,7 +107,10 @@ namespace OracleCom
             }
         }
 
-
+        public OracleConnection Connection
+        {
+            get { return _oracleConnection; }
+        }
     }
     /// <summary>
     /// パラメータのラッピングクラス
